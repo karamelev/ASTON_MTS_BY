@@ -1,11 +1,11 @@
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class TestOnlineReplenishmentCommissionFreeBlock {
@@ -17,57 +17,37 @@ public class TestOnlineReplenishmentCommissionFreeBlock {
     public void setUp() {
         driver = Driver.getDriver();
         driver.get("https://www.mts.by/");
+        wait = new WebDriverWait(driver,Duration.ofSeconds(10));
     }
 
-
-//    @AfterEach
-//    public void tearDown() {
-//        Driver.quitDriver();
-//    }
-
-
-
-    private final String title = "//h2[contains(.,'Онлайн пополнение без комиссии')]";
-
-    private final String logotypeVisa = "//div [@class='pay__partners']//img[@alt='Visa']";
-    private final String logotypeVerifiedByVisa = "//div [@class='pay__partners']//img[@alt='Verified By Visa']";
-    private final String logotypeMasterCard = "//div [@class='pay__partners']//img[@alt='MasterCard']";
-    private final String logotypeMasterCardSecureCode = "//div [@class='pay__partners']//img[@alt='MasterCard Secure Code']";
-    private final String logotypeBelcart = "//div [@class='pay__partners']//img[@alt='Белкарт']";
-
-    private final String linkServes = "//a[contains(.,'Подробнее о сервисе')]";
-    private final String phoneConnection = "#connection-phone";
-    private final String sumInput = "#connection-sum";
-    private final String email = "#connection-email";
-
-    private final String submitButton = "//button[@type='submit']";
+    @AfterEach
+    public void tearDown() {
+        Driver.quitDriver();
+    }
 
     @Test
-        public void testTitleBlock () {
-            WebElement blockTitle = driver.findElement(By.xpath(title));
+        public void testTitleBlock() {
+            WebElement blockTitle = driver.findElement(By.xpath("//h2[contains(.,'Онлайн пополнение без комиссии')]"));
             String textOfBlock = blockTitle.getText();
             Assertions.assertEquals("Онлайн пополнение\nбез комиссии",textOfBlock);
         }
 
     @Test
-    public void testLogotype () {
+    public void testLogotype() {
         List <WebElement> logotypes = driver.findElements(By.cssSelector(".pay__partners ul"));
         Assertions.assertTrue(logotypes.size() > 0, "Элементы не найдены на странице");
 
     }
 
     @Test
-    public void testMoreInfoLinkWorks () {
+    public void testMoreInfoLinkWorks() {
         driver.findElement(By.xpath("//a[contains(.,'Подробнее о сервисе')]")).click();
-//        wait.until(ExpectedCondition.)
-
-//        WebElement breadcrumbs = wait.until(ExpectedCondition("//span[@itemprop='name'][contains(.,'Порядок оплаты')]"));
-//        breadcrumbs.getText();
-//        Assertions.assertEquals("Порядок оплаты и безопасность интернет платежей",breadcrumbs);
+        WebElement breadcrumbs = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@itemprop='name'][contains(.,'Порядок оплаты')]")));
+        Assertions.assertNotNull(breadcrumbs);
     }
 
     @Test
-    public void form ()  {
+    public void testForm() {
         WebElement phone = driver.findElement(By.id("connection-phone"));
         phone.clear();
         phone.sendKeys("297777777");
@@ -76,16 +56,14 @@ public class TestOnlineReplenishmentCommissionFreeBlock {
         WebElement email = driver.findElement(By.id("connection-email"));
         email.sendKeys("karamelev@tut.by");
 
-//       new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedCondition.elementToBeClickable());
+        WebElement cookieClose = driver.findElement(By.xpath("//button[@class='cookie__close']"));
+        if (cookieClose.isDisplayed()) {
+            cookieClose.click();
+        }
 
-//        driver.findElement(By.xpath("//button[@class='cookie__close']")).click();
         driver.findElement(By.xpath("//form[@class='pay-form opened']/button[contains(.,'Продолжить')]")).click();
-////               new WebDriverWait(driver, Duration.ofSeconds(10));
-//        driver.switchTo().frame("allowpaymentrequest");
-////
-//        WebElement popap = driver.findElement(By.xpath("//div[@class='app-wrapper']"));
-//        Assertions.assertTrue(popap.isDisplayed());
+
+        new WebDriverWait(driver,Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div/iframe")));
+        Assertions.assertTrue(driver.findElement(By.xpath("//div/iframe")).isDisplayed());
     }
-
-
 }
