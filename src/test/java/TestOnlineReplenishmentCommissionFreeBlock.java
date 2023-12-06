@@ -26,16 +26,16 @@ public class TestOnlineReplenishmentCommissionFreeBlock {
     }
 
     @Test
-        public void testTitleBlock() {
-            WebElement blockTitle = driver.findElement(By.xpath("//h2[contains(.,'Онлайн пополнение без комиссии')]"));
-            String textOfBlock = blockTitle.getText();
-            Assertions.assertEquals("Онлайн пополнение\nбез комиссии",textOfBlock);
-        }
+    public void testTitleBlock() {
+        WebElement blockTitle = driver.findElement(By.xpath("//h2[contains(.,'Онлайн пополнение без комиссии')]"));
+        String textOfBlock = blockTitle.getText();
+        Assertions.assertEquals("Онлайн пополнение\nбез комиссии",textOfBlock);
+    }
 
     @Test
     public void testLogotype() {
         List <WebElement> logotypes = driver.findElements(By.cssSelector(".pay__partners ul"));
-        Assertions.assertTrue(logotypes.size() > 0, "Элементы не найдены на странице");
+        Assertions.assertTrue(!logotypes.isEmpty(), "Элементы не найдены на странице");
 
     }
 
