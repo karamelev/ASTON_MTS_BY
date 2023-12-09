@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.collections.CollectionUtils;
 import src.CartPage;
 import src.MainPage;
 import src.Product;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TestWildberries {
@@ -38,16 +40,27 @@ public class TestWildberries {
             products.add(mainPage.getCardData(card));
             mainPage.addToCart(card);
         }
+        products.sort(Comparator.comparing(Product::getName));
+
         mainPage.goToCart();
+
+        Thread.sleep(2000);
         List<Product> cartProducts = cartPage.getAllProductsData();
         System.out.println(products);
         System.out.println(cartProducts);
 
-        Assertions.assertEquals(products.size(), cartProducts.size(),"Proper amount of items should be added to the cart");
-//        for (Product product : products) {
-//
-//        }
+        Assertions.assertEquals(products.size(),cartProducts.size());
 
-        Assertions.assertEquals(products,cartProducts);
+        Assertions.assertEquals(cartPage.getTotalPrice(), Product.getTotalPrice(products));
+
+        for (int i = 0; i < cartProducts.size(); i++) {
+           Product product =  products.get(i);
+           Product cartProduct = cartProducts.get(i);
+           Assertions.assertEquals(product.getName(),cartProduct.getName());
+           Assertions.assertEquals(product.getPrice(),cartProduct.getPrice());
+//            Assertions.assertTrue(product.equals(cartProduct)); //TODO
+        }
+
+
     }
 }

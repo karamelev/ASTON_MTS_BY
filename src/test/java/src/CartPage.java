@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CartPage {
@@ -26,8 +27,8 @@ public class CartPage {
 
     @FindBy(xpath = "//div[@data-jsv='#2551^/2551^']")
     private WebElement priceLaptopTwo;
-    @FindBy(css = "[data-jsv='#2515^/2515^']")
-    private WebElement sumProduct;
+    @FindBy(css = ".b-top__total [data-link]")
+    private WebElement totalPrice;
     @FindBy(css = "[type='jsv#2505^']")
     private WebElement countProduct;
 
@@ -39,11 +40,12 @@ public class CartPage {
         for (WebElement card: cards) {
             products.add(new Product(this.getProductName(card),this.getProductPrice(card)));
         }
-//        System.out.println(products);
+        products.sort(Comparator.comparing(Product::getName));
         return products;
+
     }
     public String getProductName(WebElement card){
-        return card.findElement(By.cssSelector(".good-info__good-name")).getText();
+        return card.findElement(By.cssSelector(".good-info__good-name")).getText().replaceAll("/"," ");
     }
 
     public Integer getProductPrice(WebElement card){
@@ -53,11 +55,11 @@ public class CartPage {
         return price;
     }
 
-    public WebElement getSumProduct() {
-        return sumProduct;
+    public Integer getTotalPrice() {
+        return Integer.parseInt(totalPrice.getText()
+                .replaceAll(" ", "")
+                .replaceAll("₽", ""));
     }
 
-    public WebElement getCountProduct() {
-        return countProduct;
-    }
+
 }

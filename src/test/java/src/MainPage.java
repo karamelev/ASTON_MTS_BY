@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 public class MainPage {
     protected WebDriver driver;
@@ -38,10 +39,12 @@ public class MainPage {
     private WebElement buttonGoToBasket;
     @FindBy(css = ".product-card__add-basket")
     private WebElement buttonAddToBasket;
-    @FindBy(css = ".product-card")
-    private WebElement productCard;
+    @FindAll({@FindBy( css = ".product-card")})
+    private List<WebElement> allProductCard;
     @FindBy(css = ".product-card__name")
     private WebElement productName;
+    @FindBy(css = ".product-card__brand")
+    private WebElement productBrand;
     @FindBy(css = ".price__lower-price")
     private WebElement productPrice;
 
@@ -57,10 +60,11 @@ public class MainPage {
         Thread.sleep(5000);
         List<WebElement> productCards = driver.findElements(By.cssSelector(".product-card"));
         //        List<WebElement> productCards = productCard.;
-        return productCards.get(index);
+        return allProductCard.get(index);
     }
     public Product getCardData(WebElement card) {
-        String name = card.findElement(By.cssSelector(".product-card__name")).getText().replace("/ ", "");
+        String name = this.getProductName(card);
+//        String name = card.findElement(By.cssSelector(".product-card__name")).getText().replace("/ ", "");
 //        String name = productName.getText();
         Integer price = Integer.parseInt(card.findElement(By.cssSelector(".price__lower-price")).getText()
                 .replaceAll(" ", "")
@@ -68,6 +72,17 @@ public class MainPage {
 //        System.out.println(name);
 //        System.out.println(price);
         return new Product(name,price);
+    }
+    public String getProductName(WebElement card){
+        String brand = card.findElement(By.cssSelector(".product-card__brand")).getText();
+        String name = card.findElement(By.cssSelector(".product-card__name"))
+                .getText()
+                .replace("/ ", "");
+        if (!Objects.equals(brand, "")) {
+            name = name.replace("Ноутбук", "Ноутбук " + brand);
+        }
+        return name;
+
     }
     public void addToCart(WebElement card) throws InterruptedException {
         getActions().moveToElement(card).perform();
