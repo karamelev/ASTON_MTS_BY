@@ -13,12 +13,12 @@ public class BasePage {
     protected WebDriver driver;
     private Actions actions;
 
-
     public BasePage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver,this);
         driver.manage().window().maximize();
     }
+
     public Actions getActions(){
         if (actions==null) {
             actions = new Actions(driver);
