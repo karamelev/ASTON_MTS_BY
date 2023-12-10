@@ -25,10 +25,12 @@ public class TestWildberries {
         driver.get("https://www.wildberries.ru/");
         mainPage.waitForLoaded();
     }
+
     @AfterEach
     public void browserClose() {
         driver.quit();
     }
+
     @Test
     public void testWildberries() {
         mainPage.searchForProduct("Ноутбук");
