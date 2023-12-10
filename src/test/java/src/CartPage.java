@@ -17,15 +17,15 @@ public class CartPage extends BasePage {
     private final String itemPrice = ".list-item__price-new";
 
     @FindBy(css = ".list-item")
-    private List<WebElement> listItem;
+    private List<WebElement> allListItems;
     @FindBy(css = ".b-top__total [data-link]")
     private WebElement totalPrice;
 
     public List<Product> getAllProductsData() {
-        List<WebElement> cards = listItem;
+        List<WebElement> cards = allListItems;
         List<Product> products = new ArrayList<>();
         for (WebElement card: cards) {
-            products.add(new Product(this.getProductName(card),this.getProductPrice(card)));
+            products.add(new Product(this.getProductName(card), this.getProductPrice(card)));
         }
         products.sort(Comparator.comparing(Product::getName));
         return products;
@@ -40,12 +40,12 @@ public class CartPage extends BasePage {
     public Integer getProductPrice(WebElement card){
         return Integer.parseInt(card.findElement(By.cssSelector(itemPrice)).getText()
                 .replaceAll(" ", "")
-                .replaceAll("₽", ""));
+                .replace("₽", ""));
     }
 
     public Integer getTotalPrice() {
         return Integer.parseInt(totalPrice.getText()
                 .replaceAll(" ", "")
-                .replaceAll("₽", ""));
+                .replace("₽", ""));
     }
 }

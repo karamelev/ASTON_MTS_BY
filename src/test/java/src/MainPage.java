@@ -25,7 +25,7 @@ public class MainPage extends BasePage {
     @FindBy(xpath = "//a[@data-wba-header-name='Cart']/span")
     private WebElement buttonGoToBasket;
     @FindBy(css = ".product-card")
-    private List <WebElement> allProductCard;
+    private List<WebElement> allProductCard;
 
     public void searchForProduct(String productName) {
         searchInput.sendKeys(productName);
@@ -37,8 +37,8 @@ public class MainPage extends BasePage {
         List<Product> products = new ArrayList<>();
         for (int index : indexes) {
             WebElement card = this.getCardByIndex(index);
-            products.add(this.getCardData(card));
-           this.addToCart(card);
+            products.add(new Product(this.getProductName(card), this.getProductPrice(card)));
+            this.addToCart(card);
         }
         products.sort(Comparator.comparing(Product::getName));
         return products;
@@ -48,13 +48,6 @@ public class MainPage extends BasePage {
         return allProductCard.get(index);
     }
 
-    public Product getCardData(WebElement card) {
-        String name = this.getProductName(card);
-        Integer price = Integer.parseInt(card.findElement(By.cssSelector(productPrice)).getText()
-                .replaceAll(" ", "")
-                .replaceAll("₽", ""));
-        return new Product(name,price);
-    }
     public String getProductName(WebElement card){
         String brand = card.findElement(By.cssSelector(productBrand)).getText();
         String name = card.findElement(By.cssSelector(productName))
@@ -65,10 +58,18 @@ public class MainPage extends BasePage {
         }
         return name;
     }
+
+    public int getProductPrice(WebElement card) {
+        return Integer.parseInt(card.findElement(By.cssSelector(productPrice)).getText()
+                .replaceAll(" ", "")
+                .replace("₽",""));
+        }
+
     public void addToCart(WebElement card) {
         getActions().moveToElement(card).perform();
         card.findElement(By.cssSelector(productCartAddBasket)).click();
     }
+
     public CartPage goToCart() {
         buttonGoToBasket.click();
         this.waitForLoaded();

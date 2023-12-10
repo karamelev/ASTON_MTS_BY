@@ -37,13 +37,13 @@ public class TestWildberries {
         List<Product> cartProducts = cartPage.getAllProductsData();
 
         Assertions.assertEquals(products.size(),cartProducts.size(),"Quantity of selected products is not equal to the quantity of products in the basket");
-        Assertions.assertEquals(cartPage.getTotalPrice(), Product.getTotalPrice(products),"Total price products is not equal");
+        Assertions.assertEquals(cartPage.getTotalPrice(), Product.getTotalPrice(products),"Total price of products is not equal");
 
         for (int i = 0; i < cartProducts.size(); i++) {
-           Product product =  products.get(i);
+           Product product = products.get(i);
            Product cartProduct = cartProducts.get(i);
            Assertions.assertEquals(product.getName(),cartProduct.getName(),"Different item names");
-           Assertions.assertEquals(product.getPrice(),cartProduct.getPrice(), "Price products is not equal");
+           Assertions.assertEquals(product.getPrice(),cartProduct.getPrice(), "Price of products is not equal");
         }
     }
 }
