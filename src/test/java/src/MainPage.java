@@ -1,96 +1,77 @@
 package src;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class MainPage {
-    protected WebDriver driver;
-    private Actions actions;
-
+public class MainPage extends BasePage {
 
     public MainPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver,this);
-        driver.manage().window().maximize();
-    }
-    private Actions getActions(){
-        if (actions==null) {
-            actions = new Actions(driver);
-        }
-        return actions;
+        super(driver);
     }
 
-    @FindBy(css = "#app > .general-preloader")
-    private WebElement preloader;
-    @FindBy(id ="searchInput")
+    private final String productPrice = ".price__lower-price";
+    private final String productName = ".product-card__name";
+    private final String productBrand = ".product-card__brand";
+    private final String productCartAddBasket = ".product-card__add-basket";
+
+    @FindBy(id = "searchInput")
     private WebElement searchInput;
     @FindBy(id = "applySearchBtn")
     private WebElement buttonSearch;
     @FindBy(xpath = "//a[@data-wba-header-name='Cart']/span")
     private WebElement buttonGoToBasket;
-    @FindBy(css = ".product-card__add-basket")
-    private WebElement buttonAddToBasket;
-    @FindAll({@FindBy( css = ".product-card")})
-    private List<WebElement> allProductCard;
-    @FindBy(css = ".product-card__name")
-    private WebElement productName;
-    @FindBy(css = ".product-card__brand")
-    private WebElement productBrand;
-    @FindBy(css = ".price__lower-price")
-    private WebElement productPrice;
+    @FindBy(css = ".product-card")
+    private List <WebElement> allProductCard;
 
-    public void waitForLoaded(){
-        new WebDriverWait (driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.invisibilityOf(preloader));
-    }
     public void searchForProduct(String productName) {
         searchInput.sendKeys(productName);
         buttonSearch.click();
+        this.waitForLoaded();
     }
-    public WebElement getCardByIndex(int index) throws InterruptedException {
-        Thread.sleep(5000);
-        List<WebElement> productCards = driver.findElements(By.cssSelector(".product-card"));
-        //        List<WebElement> productCards = productCard.;
+
+    public List<Product> addProductsToCartByIndex(int [] indexes){
+        List<Product> products = new ArrayList<>();
+        for (int index : indexes) {
+            WebElement card = this.getCardByIndex(index);
+            products.add(this.getCardData(card));
+           this.addToCart(card);
+        }
+        products.sort(Comparator.comparing(Product::getName));
+        return products;
+    }
+
+    public WebElement getCardByIndex(int index) {
         return allProductCard.get(index);
     }
+
     public Product getCardData(WebElement card) {
         String name = this.getProductName(card);
-//        String name = card.findElement(By.cssSelector(".product-card__name")).getText().replace("/ ", "");
-//        String name = productName.getText();
-        Integer price = Integer.parseInt(card.findElement(By.cssSelector(".price__lower-price")).getText()
+        Integer price = Integer.parseInt(card.findElement(By.cssSelector(productPrice)).getText()
                 .replaceAll(" ", "")
                 .replaceAll("₽", ""));
-//        System.out.println(name);
-//        System.out.println(price);
         return new Product(name,price);
     }
     public String getProductName(WebElement card){
-        String brand = card.findElement(By.cssSelector(".product-card__brand")).getText();
-        String name = card.findElement(By.cssSelector(".product-card__name"))
+        String brand = card.findElement(By.cssSelector(productBrand)).getText();
+        String name = card.findElement(By.cssSelector(productName))
                 .getText()
                 .replace("/ ", "");
         if (!Objects.equals(brand, "")) {
             name = name.replace("Ноутбук", "Ноутбук " + brand);
         }
         return name;
-
     }
-    public void addToCart(WebElement card) throws InterruptedException {
+    public void addToCart(WebElement card) {
         getActions().moveToElement(card).perform();
-        card.findElement(By.cssSelector(".product-card__add-basket")).click();
+        card.findElement(By.cssSelector(productCartAddBasket)).click();
     }
     public CartPage goToCart() {
         buttonGoToBasket.click();
+        this.waitForLoaded();
         return new CartPage(driver);
     }
-
 }
