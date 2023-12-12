@@ -36,13 +36,13 @@ public class PostRequestEchoTest {
         jsonAsMap.put("text", "value");
 
         given()
-                .basePath("/post")
-                .contentType(ContentType.JSON)
-                .body(jsonAsMap)
+                    .basePath("/post")
+                    .contentType(ContentType.JSON)
+                    .body(jsonAsMap)
                 .when()
-                .post()
+                    .post()
                 .then().log().all()
-                .statusCode(200)
-                .body("data.text", equalTo("value"));
+                    .statusCode(200)
+                    .body("data.text", equalTo("value"));
     }
 }
