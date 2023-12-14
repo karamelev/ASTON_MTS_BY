@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 
-public class Tests {
+public class GoogleCalculatorTest {
     static AndroidDriver driver;
     @BeforeAll
     static void initDriver() {
@@ -37,6 +37,7 @@ public static final String divide = "com.google.android.calculator:id/op_div";
         driver.findElement(By.id(result)).click();
         Assertions.assertEquals("8",driver.findElement(By.id(resultFinal)).getText());
     }
+
     @Test
     public void testCalculatorSubtract() {
         driver.findElement(By.id("com.google.android.calculator:id/digit_8")).click();
@@ -45,7 +46,7 @@ public static final String divide = "com.google.android.calculator:id/op_div";
         driver.findElement(By.id(result)).click();
         Assertions.assertEquals("5",driver.findElement(By.id(resultFinal)).getText());
     }
-//
+
     @Test
     public void testCalculatorMultiply() {
         driver.findElement(By.id("com.google.android.calculator:id/digit_3")).click();
@@ -54,6 +55,7 @@ public static final String divide = "com.google.android.calculator:id/op_div";
         driver.findElement(By.id(result)).click();
         Assertions.assertEquals("9",driver.findElement(By.id(resultFinal)).getText());
     }
+
     @Test
     public void testCalculatorDivide() {
         driver.findElement(By.id("com.google.android.calculator:id/digit_3")).click();
@@ -62,12 +64,4 @@ public static final String divide = "com.google.android.calculator:id/op_div";
         driver.findElement(By.id(result)).click();
         Assertions.assertEquals("1",driver.findElement(By.id(resultFinal)).getText());
     }
-
-
-
-
-
-
-
-
 }
