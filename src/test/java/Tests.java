@@ -56,7 +56,6 @@ public static final String divide = "com.google.android.calculator:id/op_div";
     }
     @Test
     public void testCalculatorDivide() {
-//        driver.findElement(By.id("com.google.android.calculator:id/digit_3")).click();
         driver.findElement(By.id("com.google.android.calculator:id/digit_3")).click();
         driver.findElement(By.id(divide)).click();
         driver.findElement(By.id("com.google.android.calculator:id/digit_3")).click();
